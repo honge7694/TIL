@@ -12,6 +12,9 @@ class Post(models.Model):
         # return f"Custom Post object ({self.message})"
         return self.message
 
+    class Meta:
+        ordering = ['-id']
+
     # 모델에 정의되어 있지 않아도 함수로 list_display 가능.
     # def message_length(self):
     #     return len(self.message)
