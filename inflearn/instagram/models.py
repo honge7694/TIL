@@ -14,6 +14,8 @@ class Post(models.Model):
 
     class Meta:
         ordering = ['-id']
+        # python manage.py shell_plus --print-sql을 이용하여 좀 더 편하게 볼 수 있다.
+        # 실행 시킨 후, from instagram.models import Post import 해줘야 한다.
 
     # 모델에 정의되어 있지 않아도 함수로 list_display 가능.
     # def message_length(self):
