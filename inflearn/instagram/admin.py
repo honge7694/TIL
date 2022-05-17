@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
-from .models import Post
+from .models import Post, Comment
 
 
 # 방법 1
@@ -29,3 +29,8 @@ class PostAdmin(admin.ModelAdmin):
     # 모델에 정의되어 있지 않아도 함수로 list_display 가능.
     def message_length(self, post):
         return f'{len(post.message)} 글자'
+
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    pass
