@@ -3,9 +3,10 @@ from django.conf import settings
 
 
 class Post(models.Model):
-    # author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     message = models.TextField()
     photo = models.ImageField(blank=True, upload_to='instagram/post/%Y/%m/%d')
+    tag_set = models.ManyToManyField('Tag', blank=True)
     is_public = models.BooleanField(default=False, verbose_name='공개여부')
     created_at = models.DateTimeField(auto_now_add=True) # auto_now_add : 최초 생성 시간을 1번 사용하여 저장, 갱신 불가능
     updated_at = models.DateTimeField(auto_now=True) # auto_now : 장고 모델이 저장될때마다 현재날짜(시간)으로 갱신, 갱신 가능
@@ -33,5 +34,10 @@ class Comment(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
-
+class Tag(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    # post_set = models.ManyToManyField(Post)
+    
+    def __str__(self):
+        return self.name
 
