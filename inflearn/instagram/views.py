@@ -2,12 +2,25 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.decorators import method_decorator
 from django.http import Http404, HttpRequest, HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
+from .forms import PostForm
 from .models import Post
 from django.views.generic import ListView, DetailView, ArchiveIndexView, YearArchiveView
 
 
+def post_new(request):
+    if request.method = 'POST':
+        form = PostForm(request.POST, request.FILES)
+        if form.is_valid():
+            post = form.save()
 
+            return redirect(post)
+    else:
+        form = PostForm()
+
+    return render(request, 'instagram/post_form.html', {
+        'form': form,
+    })
 
 # CBV decorator 방법1
 # @method_decorator(login_required(), name='dispatch')
