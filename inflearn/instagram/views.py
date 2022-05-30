@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.decorators import method_decorator
@@ -8,18 +9,47 @@ from .models import Post
 from django.views.generic import ListView, DetailView, ArchiveIndexView, YearArchiveView
 
 
+@login_required
 def post_new(request):
-    if request.method = 'POST':
+    if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
-            post = form.save()
+            post = form.save(commit=False)
+            post.author = request.user # 현재 로그인 User Instance
+            post.save()
 
+            messages.success(request, '포스팅을 저장했습니다.')
             return redirect(post)
     else:
         form = PostForm()
 
     return render(request, 'instagram/post_form.html', {
         'form': form,
+        'post': None,
+    })
+
+@login_required
+def post_edit(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+
+    # 작성자 확인
+    if post.author != request.user:
+        messages.error(request, '작성자만 수정할 수 있습니다.')
+        return redirect(post)
+
+    if request.method == 'POST':
+        form = PostForm(request.POST, request.FILES, instance=post)
+
+        if form.is_valid():
+            post = form.save()
+            messages.success(request, '포스팅을 수정했습니다.')
+            return redirect(post)
+    else:
+        form = PostForm(instance=post)
+
+    return render(request, 'instagram/post_form.html', {
+        'form': form,
+        'post': post,
     })
 
 # CBV decorator 방법1
@@ -45,17 +75,17 @@ post_list = PostListView.as_view()
 
 
 # FBV decorator 방법2
-# @login_required()
-# def post_list(request):
-#     qs = Post.objects.all()
-#     q = request.GET.get('q', '')
-#     if q:
-#         qs = qs.filter(message__icontains=q)
+@login_required()
+def post_list(request):
+    qs = Post.objects.all()
+    q = request.GET.get('q', '')
+    if q:
+        qs = qs.filter(message__icontains=q)
     
-#     return render(request, 'instagram/post_list.html', {
-#         'post_list': qs,
-#         'q' : q,
-#     })
+    return render(request, 'instagram/post_list.html', {
+        'post_list': qs,
+        'q' : q,
+    })
 
 
 def post_detail(request: HttpRequest, pk: int) -> HttpResponse:

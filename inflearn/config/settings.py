@@ -134,3 +134,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 INTERNAL_IPS = ['127.0.0.1']
 
 # AUTH_USER_MODEL = 'instagram.User'
+
+from django.contrib.messages import constants as messsages_contants
+
+MESSAGE_TAGS = {
+    messsages_contants.DEBUG: 'secondary',
+    messsages_contants.ERROR: 'danger',
+}
