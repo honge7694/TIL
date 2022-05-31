@@ -52,6 +52,20 @@ def post_edit(request, pk):
         'post': post,
     })
 
+@login_required
+def post_delete(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+
+    if request.method == 'POST':
+        post.delete()
+        messages.success(request, '포스팅을 삭제했습니다.')
+
+        return redirect('instagram:post_list')
+
+    return render(request, 'instagram/post_confirm_delete.html', {
+        'post': post,
+    })
+
 # CBV decorator 방법1
 # @method_decorator(login_required(), name='dispatch')
 # class PostListView(ListView):
@@ -75,17 +89,17 @@ post_list = PostListView.as_view()
 
 
 # FBV decorator 방법2
-@login_required()
-def post_list(request):
-    qs = Post.objects.all()
-    q = request.GET.get('q', '')
-    if q:
-        qs = qs.filter(message__icontains=q)
+# @login_required()
+# def post_list(request):
+#     qs = Post.objects.all()
+#     q = request.GET.get('q', '')
+#     if q:
+#         qs = qs.filter(message__icontains=q)
     
-    return render(request, 'instagram/post_list.html', {
-        'post_list': qs,
-        'q' : q,
-    })
+#     return render(request, 'instagram/post_list.html', {
+#         'post_list': qs,
+#         'q' : q,
+#     })
 
 
 def post_detail(request: HttpRequest, pk: int) -> HttpResponse:
