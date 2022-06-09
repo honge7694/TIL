@@ -1,0 +1,16 @@
+{% extends 'accounts/layout.html' %}
+{% load bootstrap4 %}
+
+{% block content %}
+    <form action="" method='post'>
+        {% csrf_token %}
+        {% comment %} <table>
+            {{ form }}
+        </table>
+        <input type="submit" value="Login" /> {% endcomment %}
+        {% bootstrap_form form %}
+        {% buttons %}
+            <button class="btn btn-primary">회원가입</button>
+        {% endbuttons %}
+    </form>
+{% endblock content %}
